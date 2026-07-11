@@ -1,0 +1,36 @@
+:root {
+  --vert: #3B6D11; --vert-clair: #EAF3DE; --vert-bord: #97C459;
+  --gris: #5F5E5A; --gris-clair: #F1EFE8; --bord: #D3D1C7;
+  --ambre: #854F0B; --ambre-clair: #FAEEDA;
+  --rouge: #A32D2D; --rouge-clair: #FCEBEB;
+  --rayon: 8px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #2C2C2A; background: #FAFAF8; }
+button { font: inherit; cursor: pointer; border-radius: var(--rayon); border: 1px solid var(--bord); background: #fff; padding: 8px 14px; }
+button:hover { background: var(--gris-clair); }
+button.primaire { background: var(--vert); color: #fff; border-color: var(--vert); }
+button.primaire:hover { opacity: .9; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+input, select { font: inherit; width: 100%; padding: 9px 12px; border: 1px solid var(--bord); border-radius: var(--rayon); background: #fff; }
+input:focus, select:focus { outline: 2px solid var(--vert-bord); outline-offset: 1px; }
+label { display: block; font-size: 14px; color: var(--gris); margin-bottom: 4px; }
+.entete { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: #fff; border-bottom: 1px solid var(--bord); }
+.contenu { max-width: 900px; margin: 0 auto; padding: 24px; }
+.carte { background: #fff; border: 1px solid var(--bord); border-radius: 12px; padding: 20px; }
+.grille-parcelles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.parcelle { border-radius: var(--rayon); padding: 12px; min-height: 72px; text-align: left; }
+.parcelle.libre { background: var(--vert-clair); border: 1px solid var(--vert-bord); color: var(--vert); }
+.parcelle.attribuee { background: #fff; border: 1px solid var(--bord); cursor: default; }
+.metriques { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.metrique { background: var(--gris-clair); border-radius: var(--rayon); padding: 14px; }
+.metrique .valeur { font-size: 22px; font-weight: 500; margin-top: 2px; }
+.ligne-culture { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--bord); border-radius: var(--rayon); margin-bottom: 8px; }
+.badge { font-size: 12px; padding: 3px 10px; border-radius: var(--rayon); white-space: nowrap; }
+.badge.en_cours { background: var(--ambre-clair); color: var(--ambre); }
+.badge.recoltee { background: var(--vert-clair); color: var(--vert); }
+.erreur { background: var(--rouge-clair); color: var(--rouge); padding: 10px 12px; border-radius: var(--rayon); margin-bottom: 14px; font-size: 14px; }
+.modale-fond { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modale { background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 400px; }
+.vide { color: var(--gris); text-align: center; padding: 32px; }
+@media (max-width: 600px) { .contenu { padding: 16px; } }

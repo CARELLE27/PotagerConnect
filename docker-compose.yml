@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-potager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-potager}
+      POSTGRES_DB: ${POSTGRES_DB:-potagerconnect}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-potager}"]
+      interval: 5s
+      retries: 5
+    networks: [interne]
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-potager}:${POSTGRES_PASSWORD:-potager}@db:5432/${POSTGRES_DB:-potagerconnect}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY est obligatoire}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks: [interne]
+
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports:
+      - "5173:80"
+    networks: [interne]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+    ports:
+      - "9090:9090"
+    networks: [interne]
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "9093:9093"
+    networks: [interne]
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafanadata:/var/lib/grafana
+    depends_on: [prometheus]
+    ports:
+      - "3000:3000"
+    networks: [interne]
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    networks: [interne]
+
+volumes:
+  pgdata:
+  grafanadata:
+
+networks:
+  interne:
+    driver: bridge

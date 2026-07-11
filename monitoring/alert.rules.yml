@@ -1,0 +1,38 @@
+groups:
+  - name: potagerconnect
+    rules:
+      - alert: ServiceDown
+        expr: up{job="backend"} == 0
+        for: 1m
+        labels:
+          severity: critique
+        annotations:
+          summary: "L'API PotagerConnect ne repond plus"
+          description: "Le backend est injoignable depuis plus d'une minute."
+
+      - alert: TauxErreur5xxEleve
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          / sum(rate(http_requests_total[5m])) > 0.05
+        for: 2m
+        labels:
+          severity: critique
+        annotations:
+          summary: "Plus de 5% des requetes echouent"
+          description: "Le taux d'erreurs 5xx depasse 5% sur les 5 dernieres minutes."
+
+      - alert: LatenceElevee
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 1
+        for: 5m
+        labels:
+          severity: avertissement
+        annotations:
+          summary: "Latence p95 superieure a 1 seconde"
+
+      - alert: MemoireSaturee
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: avertissement
+        annotations:
+          summary: "Plus de 90% de la RAM est utilisee"
