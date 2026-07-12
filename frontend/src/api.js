@@ -51,6 +51,8 @@ export const api = {
   proposerRecolte: (b) => request('/recoltes', { method: 'POST', body: b }),
   reserverRecolte: (id) => request(`/recoltes/${id}/reserver`, { method: 'PATCH' }),
   annulerRecolte: (id) => request(`/recoltes/${id}`, { method: 'DELETE' }),
+
+  meteo: () => request('/meteo'),
 }
 
 export { getToken }

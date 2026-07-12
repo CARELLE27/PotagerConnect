@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
+import WidgetMeteo from '../components/WidgetMeteo'
 
 export default function MaParcelle() {
   const [parcelle, setParcelle] = useState(null)
@@ -59,6 +60,8 @@ export default function MaParcelle() {
     <>
       <h1 style={{ fontSize: 20 }}>Ma parcelle</h1>
       {erreur && <div className="erreur" role="alert">{erreur}</div>}
+
+      <WidgetMeteo />
 
       <div className="metriques">
         <div className="metrique">
