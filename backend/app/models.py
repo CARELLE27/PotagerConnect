@@ -1,7 +1,7 @@
 import enum
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer, String, func
+from sqlalchemy import Boolean, Date, DateTime, Enum, Float, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -104,3 +104,59 @@ class Recolte(Base):
     )
     reserve_par: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+class TypePostEnum(str, enum.Enum):
+    entraide = "entraide"
+    troc = "troc"
+
+
+class PostForum(Base):
+    """Forum d'entraide et troc de graines/plants - US-15 / US-16 / US-17 (COULD)."""
+
+    __tablename__ = "posts_forum"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    titre: Mapped[str] = mapped_column(String(150), nullable=False)
+    contenu: Mapped[str] = mapped_column(String(2000), nullable=False)
+    type: Mapped[TypePostEnum] = mapped_column(
+        Enum(TypePostEnum, name="type_post_enum"), default=TypePostEnum.entraide, nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    auteur: Mapped["User"] = relationship()
+    commentaires: Mapped[list["CommentaireForum"]] = relationship(
+        back_populates="post", cascade="all, delete-orphan"
+    )
+
+
+class CommentaireForum(Base):
+    __tablename__ = "commentaires_forum"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts_forum.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    contenu: Mapped[str] = mapped_column(String(1000), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    post: Mapped["PostForum"] = relationship(back_populates="commentaires")
+    auteur: Mapped["User"] = relationship()
+
+
+class PhotoCulture(Base):
+    """Photos d'evolution des cultures - US-10 (COULD).
+
+    L'image est stockee encodee en base64 (Text) : simple, sans volume Docker
+    a gerer. Adapte a l'echelle d'un projet pedagogique.
+    """
+
+    __tablename__ = "photos_culture"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    culture_id: Mapped[int] = mapped_column(ForeignKey("cultures.id"), nullable=False)
+    image_base64: Mapped[str] = mapped_column(Text, nullable=False)
+    legende: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    culture: Mapped["Culture"] = relationship()
