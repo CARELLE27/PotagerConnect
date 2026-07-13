@@ -6,5 +6,5 @@ select = ["E", "F", "I", "UP", "B", "S"]
 ignore = ["S101", "B008", "UP017"]
 
 [lint.per-file-ignores]
-"tests/*" = ["S105", "S106"]
+"tests/*" = ["S105", "S106","I001"]
 "app/config.py" = ["S105"]
