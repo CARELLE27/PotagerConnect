@@ -10,10 +10,11 @@ groups:
           summary: "L'API PotagerConnect ne repond plus"
           description: "Le backend est injoignable depuis plus d'une minute."
 
+      # Corrige : prometheus-fastapi-instrumentator utilise status="5xx" (pas "500")
       - alert: TauxErreur5xxEleve
         expr: |
-          sum(rate(http_requests_total{status=~"5.."}[5m]))
-          / sum(rate(http_requests_total[5m])) > 0.05
+          sum(rate(http_requests_total{status="5xx"}[5m]))
+          / clamp_min(sum(rate(http_requests_total[5m])), 0.0001) > 0.05
         for: 2m
         labels:
           severity: critique
