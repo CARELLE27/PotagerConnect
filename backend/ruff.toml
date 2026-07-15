@@ -1,10 +1,12 @@
+
 line-length = 100
 target-version = "py311"
 
 [lint]
 select = ["E", "F", "I", "UP", "B", "S"]
-ignore = ["S101"]
+ignore = ["S101", "B008", "UP017"]
 
 [lint.per-file-ignores]
-"tests/*" = ["S105", "S106"]
-"app/config.py" = ["S105"]
+"**/tests/*" = ["S105", "S106", "I001"]
+"**/conftest.py" = ["S105", "S106", "I001"]
+"**/config.py" = ["S105"]
