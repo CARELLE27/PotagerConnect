@@ -90,3 +90,56 @@ class RecolteOut(BaseModel):
     statut: StatutRecolteEnum
     reserve_par: int | None
     created_at: datetime
+
+
+class CommentaireCreate(BaseModel):
+    contenu: str = Field(min_length=1, max_length=1000)
+
+
+class CommentaireOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    post_id: int
+    user_id: int
+    auteur_nom: str | None = None
+    contenu: str
+    created_at: datetime
+
+
+class PostCreate(BaseModel):
+    titre: str = Field(min_length=1, max_length=150)
+    contenu: str = Field(min_length=1, max_length=2000)
+    type: str = "entraide"
+
+
+class PostOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    auteur_nom: str | None = None
+    titre: str
+    contenu: str
+    type: str
+    created_at: datetime
+    nb_commentaires: int = 0
+
+
+class PostDetail(PostOut):
+    commentaires: list[CommentaireOut] = []
+
+
+class PhotoCreate(BaseModel):
+    image_base64: str = Field(min_length=1)
+    legende: str | None = Field(default=None, max_length=200)
+
+
+class PhotoOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    culture_id: int
+    image_base64: str
+    legende: str | None
+    created_at: datetime

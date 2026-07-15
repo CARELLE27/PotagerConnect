@@ -46,6 +46,12 @@ export const api = {
   suggestions: (parcelleId) =>
     request(`/suggestions${parcelleId ? `?parcelle_id=${parcelleId}` : ''}`),
 
+
+  listePhotos: (cultureId) => request(`/cultures/${cultureId}/photos`),
+  ajouterPhoto: (cultureId, b) =>
+    request(`/cultures/${cultureId}/photos`, { method: 'POST', body: b }),
+  supprimerPhoto: (id) => request(`/photos/${id}`, { method: 'DELETE' }),
+
   listeRecoltes: (statut) =>
     request(`/recoltes${statut ? `?statut=${statut}` : ''}`),
   proposerRecolte: (b) => request('/recoltes', { method: 'POST', body: b }),
@@ -53,6 +59,14 @@ export const api = {
   annulerRecolte: (id) => request(`/recoltes/${id}`, { method: 'DELETE' }),
 
   meteo: () => request('/meteo'),
+
+
+  listePosts: (type) => request(`/forum${type ? `?type=${type}` : ''}`),
+  creerPost: (b) => request('/forum', { method: 'POST', body: b }),
+  detailPost: (id) => request(`/forum/${id}`),
+  commenter: (id, b) => request(`/forum/${id}/commentaires`, { method: 'POST', body: b }),
+  supprimerPost: (id) => request(`/forum/${id}`, { method: 'DELETE' }),
+
 }
 
 export { getToken }

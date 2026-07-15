@@ -134,3 +134,65 @@ def suggestions(
         "familles_evitees": sorted(familles_a_eviter),
         "suggestions": suggestions_du_mois(mois, familles_a_eviter),
     }
+
+
+# --- Photos d'evolution des cultures - US-10 (COULD) ---
+
+from app.models import PhotoCulture  # noqa: E402
+from app.schemas import PhotoCreate, PhotoOut  # noqa: E402
+
+
+@router.post(
+    "/cultures/{culture_id}/photos",
+    response_model=PhotoOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def ajouter_photo(
+    culture_id: int,
+    payload: PhotoCreate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """US-10 : ajouter une photo d'evolution a une culture (sa propre parcelle)."""
+    culture = db.get(Culture, culture_id)
+    if culture is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Culture introuvable")
+    _verifier_proprietaire(culture.parcelle, user)
+
+    photo = PhotoCulture(
+        culture_id=culture.id,
+        image_base64=payload.image_base64,
+        legende=payload.legende,
+    )
+    db.add(photo)
+    db.commit()
+    db.refresh(photo)
+    return photo
+
+
+@router.get("/cultures/{culture_id}/photos", response_model=list[PhotoOut])
+def liste_photos(
+    culture_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    culture = db.get(Culture, culture_id)
+    if culture is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Culture introuvable")
+    _verifier_proprietaire(culture.parcelle, user)
+    return (
+        db.query(PhotoCulture)
+        .filter(PhotoCulture.culture_id == culture_id)
+        .order_by(PhotoCulture.created_at.desc())
+        .all()
+    )
+
+
+@router.delete("/photos/{photo_id}", status_code=status.HTTP_204_NO_CONTENT)
+def supprimer_photo(
+    photo_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    photo = db.get(PhotoCulture, photo_id)
+    if photo is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Photo introuvable")
+    _verifier_proprietaire(photo.culture.parcelle, user)
+    db.delete(photo)
+    db.commit()

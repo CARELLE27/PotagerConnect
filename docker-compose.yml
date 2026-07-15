@@ -49,6 +49,7 @@ services:
       - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:
       - "9040:9093"
+
     networks: [interne]
 
   grafana:

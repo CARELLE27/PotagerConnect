@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.config import settings
-from app.routers import auth, cultures, meteo, parcelles, recoltes
+from app.routers import auth, cultures, forum, meteo, parcelles, recoltes
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,6 +35,10 @@ app.include_router(parcelles.users_router)
 app.include_router(cultures.router)
 app.include_router(recoltes.router)
 app.include_router(meteo.router)
+<<<<<<< HEAD
+=======
+app.include_router(forum.router)
+>>>>>>> PREVIEW
 
 
 @app.get("/health", tags=["monitoring"])

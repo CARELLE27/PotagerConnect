@@ -54,7 +54,11 @@ async def meteo(_: User = Depends(get_current_user)):
         raise HTTPException(
             status.HTTP_503_SERVICE_UNAVAILABLE,
             "Service meteo indisponible pour le moment. Reessayez plus tard.",
+<<<<<<< HEAD
         ) from None
+=======
+        )
+>>>>>>> PREVIEW
 
     daily = data.get("daily", {})
     temp_max = daily.get("temperature_2m_max", [None])[0]

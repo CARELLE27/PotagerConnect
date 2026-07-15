@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import WidgetMeteo from '../components/WidgetMeteo'
+<<<<<<< HEAD
+=======
+import PhotosCulture from '../components/PhotosCulture'
+>>>>>>> PREVIEW
 
 export default function MaParcelle() {
   const [parcelle, setParcelle] = useState(null)
@@ -10,6 +14,7 @@ export default function MaParcelle() {
   const [form, setForm] = useState({ nom_plante: '', date_plantation: '' })
   const [erreur, setErreur] = useState('')
   const [chargement, setChargement] = useState(true)
+  const [photosCulture, setPhotosCulture] = useState(null)
 
   async function recharger() {
     try {
@@ -108,6 +113,9 @@ export default function MaParcelle() {
               <span className={`badge ${c.statut}`}>
                 {c.statut === 'en_cours' ? 'En cours' : 'Recoltee'}
               </span>
+              <button onClick={() => setPhotosCulture(c)} style={{ fontSize: 13, padding: '5px 10px' }}>
+                Photos
+              </button>
               {c.statut === 'en_cours' && (
                 <button onClick={() => recolter(c.id)} style={{ fontSize: 13, padding: '5px 10px' }}>
                   Recolter
@@ -116,6 +124,10 @@ export default function MaParcelle() {
             </div>
           </div>
         ))
+      )}
+
+      {photosCulture && (
+        <PhotosCulture culture={photosCulture} onFermer={() => setPhotosCulture(null)} />
       )}
 
       {ouvert && (

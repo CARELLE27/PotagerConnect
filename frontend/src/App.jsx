@@ -6,6 +6,9 @@ import CarteParcelles from './pages/CarteParcelles'
 import MaParcelle from './pages/MaParcelle'
 import PartageRecoltes from './pages/PartageRecoltes'
 
+import Forum from './pages/Forum'
+
+
 function RouteProtegee({ children, adminSeulement = false }) {
   const { user, chargement } = useAuth()
   if (chargement) return <p className="vide">Chargement...</p>
@@ -49,6 +52,16 @@ export default function App() {
             }
           />
           <Route
+
+            path="/forum"
+            element={
+              <RouteProtegee>
+                <Forum />
+              </RouteProtegee>
+            }
+          />
+          <Route
+
             path="/"
             element={
               <Navigate to={user?.role === 'admin' ? '/parcelles' : '/ma-parcelle'} replace />

@@ -25,6 +25,8 @@ export default function Entete() {
             <Link to="/ma-parcelle" style={lienStyle(pathname === '/ma-parcelle')}>Ma parcelle</Link>
           )}
           <Link to="/recoltes" style={lienStyle(pathname === '/recoltes')}>Recoltes partagees</Link>
+          <Link to="/forum" style={lienStyle(pathname === '/forum')}>Forum</Link>
+
         </nav>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
