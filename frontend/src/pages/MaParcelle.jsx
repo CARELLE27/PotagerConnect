@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import WidgetMeteo from '../components/WidgetMeteo'
-<<<<<<< HEAD
-=======
+
 import PhotosCulture from '../components/PhotosCulture'
->>>>>>> PREVIEW
+
 
 export default function MaParcelle() {
   const [parcelle, setParcelle] = useState(null)
