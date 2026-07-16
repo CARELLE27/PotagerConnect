@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-potager}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-potager}
@@ -16,6 +17,7 @@ services:
 
   backend:
     build: ./backend
+    restart: unless-stopped
     environment:
       DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-potager}:${POSTGRES_PASSWORD:-potager}@db:5432/${POSTGRES_DB:-potagerconnect}
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY est obligatoire}
@@ -29,6 +31,7 @@ services:
 
   frontend:
     build: ./frontend
+    restart: unless-stopped
     depends_on: [backend]
     ports:
       - "5173:80"
@@ -36,6 +39,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.54.1
+    restart: unless-stopped
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
@@ -45,6 +49,7 @@ services:
 
   alertmanager:
     image: prom/alertmanager:v0.27.0
+    restart: unless-stopped
     volumes:
       - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:
@@ -54,6 +59,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.0
+    restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
     volumes:
@@ -66,6 +72,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
     networks: [interne]
 
 volumes:
