@@ -35,10 +35,8 @@ app.include_router(parcelles.users_router)
 app.include_router(cultures.router)
 app.include_router(recoltes.router)
 app.include_router(meteo.router)
-<<<<<<< HEAD
-=======
+
 app.include_router(forum.router)
->>>>>>> PREVIEW
 
 
 @app.get("/health", tags=["monitoring"])
